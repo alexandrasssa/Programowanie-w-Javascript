@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pogoda</title>
+  <title>Pogoda</title>
+</head>
+<body>
+  <h1>Aktualna pogoda</h1>
+  <form>
+        <label>
+          Wpisz nazwę miasta:
+          <input type="text" id="city" required>
+    
+        </label>
+        <button type="submit">Szukaj</button>
+      </form>
+      <div id="weather"></div>
+      <h2>Ulubione miejsca:</h2>
+      <ul id="favorites"></ul>
+      <form>
+        <label>
+          Dodaj nowe miejsce:
+          <input type="text" id="newCity" required>
+        </label>
+        <button type="submit">Dodaj</button>
+      </form>
+      <script src="script.js"></script>
+    <label for="city">Wpisz nazwę miasta:</label>
+    <input type="text" id="city" name="city">
+    <button type="submit">Sprawdź pogodę</button>
+  </form>
+  <div id="weather"></div>
+
+  <script>
+    const apiKey = '908268816a7fa9a0061f7c8395e47ea5'; 
+
+    async function getWeather(city) {
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+      const data = await response.json();
+      return data;
+    }
+
+    function displayWeather(data) {
+      const temperature = Math.round(data.main.temp);
+      const humidity = data.main.humidity;
+      const weatherDescription = data.weather[0].description;
+      let weatherIcon;
+
+      if (weatherDescription.includes('cloud')) {
+        weatherIcon = '☁️';
+      } else if (weatherDescription.includes('sun') || weatherDescription.includes('clear')) {
+        weatherIcon = '☀️';
+      } else if (weatherDescription.includes('rain')) {
+        weatherIcon = '🌧️';
+      } else if (weatherDescription.includes('snow')) {
+        weatherIcon = '❄️';
+      } else {
+        weatherIcon = '🌫️';
+      }
+
+      const weatherElement = document.getElementById('weather');
+      weatherElement.innerHTML = `
+        <p>Temperatura: ${temperature} °C</p>
+        <p>Wilgotność: ${humidity} %</p>
+        <p>Pogoda: ${weatherIcon} ${weatherDescription}</p>
+      `;
+    }
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const city = document.getElementById('city').value;
+      const data = await getWeather(city);
+      displayWeather(data);
+    });
+  </script>
+</body>
+</html>
