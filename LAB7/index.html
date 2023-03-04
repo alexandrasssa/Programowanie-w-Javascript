@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weather App</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+		}
+		h1 {
+			text-align: center;
+		}
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			max-width: 800px;
+			margin: 0 auto;
+		}
+		.location {
+			margin: 20px;
+			padding: 20px;
+			width: 200px;
+			background-color: #eee;
+			border-radius: 10px;
+			box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+		}
+		.location img {
+			width: 100px;
+			height: 100px;
+		}
+		.location h2 {
+			margin-top: 10px;
+			font-size: 24px;
+			font-weight: bold;
+			text-align: center;
+		}
+		.location p {
+			margin: 10px 0;
+			font-size: 18px;
+			text-align: center;
+		}
+		input[type="text"] {
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+			margin-right: 10px;
+			width: 200px;
+		}
+		input[type="submit"] {
+			padding: 10px 20px;
+			background-color: #4CAF50;
+			color: white;
+			border-radius: 5px;
+			border: none;
+			box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+			cursor: pointer;
+		}
+		.add-location-form {
+			margin: 20px auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>Weather App</h1>
+
+	<div class="add-location-form">
+		<label for="location">Add Location:</label>
+		<input type="text" id="location" placeholder="City Name">
+		<input type="submit" value="Add">
+	</div>
+
+	<div class="container" id="weather-container"></div>
+
+	<script src="weather.js"></script>
+</body>
+</html>
