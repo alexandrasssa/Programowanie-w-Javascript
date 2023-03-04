@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Przeliczanie wartości</title>
+	<script>
+		function addField() {
+			var container = document.getElementById("container");
+			var input = document.createElement("input");
+			input.type = "text";
+			input.oninput = calculate;
+			container.appendChild(input);
+		}
+
+		function removeField() {
+			var container = document.getElementById("container");
+			var inputs = container.getElementsByTagName("input");
+			if (inputs.length > 3) {
+				container.removeChild(inputs[inputs.length - 1]);
+				calculate();
+			}
+		}
+
+		function calculate() {
+			var container = document.getElementById("container");
+			var inputs = container.getElementsByTagName("input");
+			var sum = 0;
+			var count = 0;
+			var min = Number.MAX_VALUE;
+			var max = Number.MIN_VALUE;
+
+			for (var i = 0; i < inputs.length; i++) {
+				if (inputs[i].value !== "") {
+					var value = Number(inputs[i].value);
+					sum += value;
+					count++;
+					if (value < min) {
+						min = value;
+					}
+					if (value > max) {
+						max = value;
+					}
+				}
+			}
+
+			var average = sum / count;
+			if (isNaN(average)) {
+				average = 0;
+			}
+
+			document.getElementById("sum").textContent = sum;
+			document.getElementById("average").textContent = average;
+			document.getElementById("min").textContent = min;
+			document.getElementById("max").textContent = max;
+		}
+	</script>
+</head>
+<body>
+	<div id="container">
+		<input type="text" oninput="calculate()">
+		<input type="text" oninput="calculate()">
+		<input type="text" oninput="calculate()">
+	</div>
+	<button onclick="addField()">Dodaj pole</button>
+	<button onclick="removeField()">Usuń pole</button>
+	<button onclick="calculate()">Przelicz</button>
+	<p>Suma: <span id="sum"></span></p>
+	<p>Średnia: <span id="average"></span></p>
+	<p>Min: <span id="min"></span></p>
+	<p>Max: <span id="max"></span></p>
+</body>
+</html>
