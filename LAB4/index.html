@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Przypomnienia</title>
+  <style>
+    .reminder {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid black;
+    }
+    .done {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <h1>Przypomnienia</h1>
+
+  <form>
+    <label for="reminder-name">Nazwa:</label>
+    <input type="text" id="reminder-name">
+    <label for="reminder-date">Data:</label>
+    <input type="date" id="reminder-date">
+    <button type="submit">Dodaj przypomnienie</button>
+  </form>
+
+  <div id="reminder-list"></div>
+
+  <script>
+    // Pobieramy elementy HTML
+    const form = document.querySelector('form');
+    const reminderName = document.querySelector('#reminder-name');
+    const reminderDate = document.querySelector('#reminder-date');
+    const reminderList = document.querySelector('#reminder-list');
+
+    // Tworzymy tablicę przypomnień
+    let reminders = [];
+
+    // Funkcja, która zwraca tekst z dnia tygodnia
+    function getDayOfWeek(date) {
+      const daysOfWeek = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
+      return daysOfWeek[date.getDay()];
+    }
+
+    // Funkcja, która dodaje przypomnienie
+    function addReminder(event) {
+      event.preventDefault();
+
+      const name = reminderName.value.trim();
+      const date = reminderDate.value;
+
+      if (name === '' || date === '') {
+        alert('Wypełnij wszystkie pola!');
+        return;
+      }
+
+      const reminder = {
+        name,
+        date,
+        done: false,
+        id: Date.now(),
+      };
+
+      reminders.push(reminder);
+      saveReminders();
+      displayReminders();
+
+      form.reset();
+    }
+
+    // Funkcja, która zapisuje przypomnienia w localStorage
+    function saveReminders() {
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+
+    // Funkcja, która wczytuje przypomnienia z localStorage
+    function loadReminders() {
+      try {
+        const remindersJSON = localStorage.getItem('reminders');
+        if (remindersJSON !== null) {
+          reminders = JSON.parse(remindersJSON);
+        }
+      } catch (e) {
+        console.error('Nie udało się wczytać przypomnień z localStorage');
+        reminders = [];
+      }
+    }
