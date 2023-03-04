@@ -1,0 +1,8 @@
+Opis kodu:
+Na początku strony tworzone jest pole div z identyfikatorem container, w którym znajdują się trzy pola tekstowe.
+ Każde pole tekstowe ma atrybut oninput, który wywołuje funkcję calculate() za każdym razem, gdy wartość pola tekstowego się zmienia.
+Pod polem div znajdują się trzy przyciski: "Dodaj pole", "Usuń pole" i "Przelicz". 
+Kliknięcie przycisku "Dodaj pole" wywołuje funkcję addField(), która dodaje kolejne pole tekstowe do pola div.
+ Kliknięcie przycisku "Usuń pole" wywołuje funkcję removeField(), która usuwa ostatnie pole tekstowe z pola div.
+ Kliknięcie przycisku "Przelicz" wywołuje funkcję calculate(), która oblicza sumę, średnią, minimum i maksimum 
+ z wartości wpisanych do pól.
