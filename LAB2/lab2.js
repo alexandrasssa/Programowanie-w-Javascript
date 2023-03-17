@@ -1,70 +1,70 @@
-const slides = document.querySelectorAll('.slide');
-const dots = document.querySelectorAll('.dot');
-const prevBtn = document.querySelector('.prev-btn');
-const nextBtn = document.querySelector('.next-btn');
-const slideWidth = slides[0].clientWidth;
-let slideIndex = 0;
-let timerId;
+const images = [
+	{
+		number: 1,
+		src: "./image1.jpg",
+	},
+	{
+		number: 2,
+		src: "./image2.jpg",
+	},
+	{
+		number: 3,
+		src: "./image3.webp",
+	},
+]
 
-// Set initial slide position
-slides.forEach((slide, index) => {
-  slide.style.left = `${slideWidth * index}px`;
-});
+const prev = document.querySelector(".prev")
+const next = document.querySelector(".next")
+let selected = 0
+const imagesLength = images.length - 1
 
-// Go to specific slide
-function goToSlide(index) {
-  if (index < 0) {
-    index = slides.length - 1;
-  } else if (index >= slides.length) {
-    index = 0;
-  }
-  document.querySelector('.slides').style.transform = `translateX(-${slideWidth * index}px)`;
-  slideIndex = index;
-  setActiveDot();
+const updateBackgroundImage = index => {
+	const sliderImg = document.querySelector(".slider img")
+	sliderImg.src = images[index].src
 }
 
-// Go to previous slide
-function prevSlide() {
-  goToSlide(slideIndex - 1);
+const changeBackgroundImage = buttonType => {
+	if (buttonType === "next") {
+		selected = selected + 1
+		if (selected > imagesLength) {
+			selected = 0
+			updateBackgroundImage(0)
+		} else {
+			updateBackgroundImage(selected)
+		}
+	}
+
+	if (buttonType === "prev") {
+		selected = selected - 1
+		if (selected < 0) {
+			selected = imagesLength
+			updateBackgroundImage(imagesLength)
+		} else {
+			updateBackgroundImage(selected)
+		}
+	}
 }
 
-// Go to next slide
-function nextSlide() {
-  goToSlide(slideIndex + 1);
+prev.addEventListener("click", () => changeBackgroundImage("prev"))
+next.addEventListener("click", () => changeBackgroundImage("next"))
+
+const numberedButtons = document.querySelectorAll(".menu_button")
+
+const changeImgByIndex = event => {
+	const index = event.target.getAttribute("imageIndex") * 1
+	updateBackgroundImage(index - 1)
 }
 
-// Set active dot
-function setActiveDot() {
-  dots.forEach(dot => dot.classList.remove('active'));
-  dots[slideIndex].classList.add('active');
+numberedButtons.forEach(button => {
+	button.addEventListener("click", changeImgByIndex)
+})
+
+updateBackgroundImage(selected)
+
+const startAutomaticSlide = () => {
+	setInterval(() => {
+		changeBackgroundImage("next")
+	}, 5000)
 }
 
-// Start automatic slideshow
-function startSlideshow() {
-  timerId = setInterval(() => {
-    nextSlide();
-  }, 5000);
-}
-
-// Stop automatic slideshow
-function stopSlideshow() {
-  clearInterval(timerId);
-}
-
-// Event listeners
-prevBtn.addEventListener('click', () => {
-  prevSlide();
-  stopSlideshow();
-});
-
-nextBtn.addEventListener('click', () => {
-  nextSlide();
-  stopSlideshow();
-});
-
-dots.forEach((dot, index) => {
-  dot.addEventListener('click', () => {
-    goToSlide(index);
-    stopSlideshow();
-  });
-});
+startAutomaticSlide()
