@@ -1,29 +1,104 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="UTF-8">
-	<title>Bouncing Balls</title>
-	<style>
-		canvas {
-			border: 1px solid black;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <title>Kulki</title>
+    <style>
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
+
 <body>
-	<canvas id="canvas" width="800" height="600"></canvas>
-	<div>
-		<label for="balls-input">Number of balls:</label>
-		<input type="number" id="balls-input" value="10">
-	</div>
-	<div>
-		<label for="min-distance-input">Minimum distance:</label>
-		<input type="range" id="min-distance-input" min="0" max="50" value="10">
-	</div>
-	<div>
-		<label for="force-input">Force:</label>
-		<input type="range" id="force-input" min="0" max="100" value="50">
-	</div>
-	<button id="start-button">Start</button>
-	<button id="reset-button">Reset</button>
-	<script src="script.js"></script>
+    <canvas id="myCanvas"></canvas>
+    <button id="start-reset-button" onclick="startReset()">Start/Reset</button>
+    <script>
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const numBalls = 10; // liczba kulek
+        const ballRadius = 10; // promień kuli
+        const minDist = 100; // minimalna odległość między kulami, przy której połączymy je linią
+
+        let balls = [];
+
+        function Ball(x, y, dx, dy) {
+            this.x = x;
+            this.y = y;
+            this.dx = dx;
+            this.dy = dy;
+        }
+
+        function init() {
+            for (let i = 0; i < numBalls; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const dx = (Math.random() - 0.5) * 5;
+                const dy = (Math.random() - 0.5) * 5;
+                balls.push(new Ball(x, y, dx, dy));
+            }
+        }
+
+        function drawBall(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = "#0095DD";
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < balls.length; i++) {
+                const ball1 = balls[i];
+                drawBall(ball1.x, ball1.y);
+                ball1.x += ball1.dx;
+                ball1.y += ball1.dy;
+                if (ball1.x + ballRadius > canvas.width || ball1.x - ballRadius < 0) {
+                    ball1.dx = -ball1.dx;
+                }
+                if (ball1.y + ballRadius > canvas.height || ball1.y - ballRadius < 0) {
+                    ball1.dy = -ball1.dy;
+                }
+                for (let j = i + 1; j < balls.length; j++) {
+                    const ball2 = balls[j];
+                    const distX = ball1.x - ball2.x;
+                    const distY = ball1.y - ball2.y;
+                    const distance = Math.sqrt(distX * distX + distY * distY);
+                    if (distance < minDist) {
+                        drawLine(ball1.x, ball1.y, ball2.x, ball2.y);
+                    }
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+        function startReset() {
+            if (requestId) {
+                cancelAnimationFrame(requestId);
+            }
+            balls = [];
+            init();
+            requestId = requestAnimationFrame(draw);
+        }
+
+        let requestId;
+
+
+        init();
+        draw();
+    </script>
 </body>
+
+</html>
