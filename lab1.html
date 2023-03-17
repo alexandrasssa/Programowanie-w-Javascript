@@ -1,71 +1,176 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>Przeliczanie wartości</title>
-	<script>
-		function addField() {
-			var container = document.getElementById("container");
-			var input = document.createElement("input");
-			input.type = "text";
-			input.oninput = calculate;
-			container.appendChild(input);
-		}
-
-		function removeField() {
-			var container = document.getElementById("container");
-			var inputs = container.getElementsByTagName("input");
-			if (inputs.length > 3) {
-				container.removeChild(inputs[inputs.length - 1]);
-				calculate();
-			}
-		}
-
-		function calculate() {
-			var container = document.getElementById("container");
-			var inputs = container.getElementsByTagName("input");
-			var sum = 0;
-			var count = 0;
-			var min = Number.MAX_VALUE;
-			var max = Number.MIN_VALUE;
-
-			for (var i = 0; i < inputs.length; i++) {
-				if (inputs[i].value !== "") {
-					var value = Number(inputs[i].value);
-					sum += value;
-					count++;
-					if (value < min) {
-						min = value;
-					}
-					if (value > max) {
-						max = value;
-					}
-				}
-			}
-
-			var average = sum / count;
-			if (isNaN(average)) {
-				average = 0;
-			}
-
-			document.getElementById("sum").textContent = sum;
-			document.getElementById("average").textContent = average;
-			document.getElementById("min").textContent = min;
-			document.getElementById("max").textContent = max;
-		}
-	</script>
+    <title>Notatki użytkownika</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-	<div id="container">
-		<input type="text" oninput="calculate()">
-		<input type="text" oninput="calculate()">
-		<input type="text" oninput="calculate()">
-	</div>
-	<button onclick="addField()">Dodaj pole</button>
-	<button onclick="removeField()">Usuń pole</button>
-	<button onclick="calculate()">Przelicz</button>
-	<p>Suma: <span id="sum"></span></p>
-	<p>Średnia: <span id="average"></span></p>
-	<p>Min: <span id="min"></span></p>
-	<p>Max: <span id="max"></span></p>
+    <h1>Notatki użytkownika</h1>
+
+    <div>
+        <label for="note-text">Tekst notatki:</label>
+        <input type="text" id="note-text" />
+    </div>
+
+    <div>
+        <label for="note-color">Kolor notatki:</label>
+        <select id="note-color">
+            <option value="red">Czerwony</option>
+            <option value="green">Zielony</option>
+            <option value="blue">Niebieski</option>
+        </select>
+    </div>
+
+    <button id="add-note">Dodaj notatkę</button>
+
+    <div id="notes-list"></div>
+
+    <script src="app.js"></script>
 </body>
+
 </html>
+Kamil
+Kamil Bętkowski
+/* Style dla body */
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+/* Style dla h1 */
+h1 {
+	background-color: #0074d9;
+	color: #fff;
+	font-size: 36px;
+	margin: 0;
+	padding: 20px;
+	text-align: center;
+}
+
+/* Style dla input i select */
+input,
+select {
+	border: none;
+	border-radius: 4px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+	font-size: 16px;
+	padding: 10px;
+	width: 100%;
+}
+
+/* Style dla div z inputem */
+div:not(#notes-list) {
+	margin-bottom: 10px;
+}
+
+/* Style dla button */
+button {
+	background-color: #0074d9;
+	border: none;
+	border-radius: 4px;
+	color: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	padding: 10px;
+}
+
+/* Style dla div z notatką */
+.note {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+/* Style dla notatki z czerwonym tłem */
+.note-red {
+	background-color: #ff4136;
+	color: #fff;
+}
+
+/* Style dla notatki z zielonym tłem */
+.note-green {
+	background-color: #2ecc40;
+	color: #fff;
+}
+
+/* Style dla notatki z niebieskim tłem */
+.note-blue {
+	background-color: #0074d9;
+	color: #fff;
+}
+Kamil
+Kamil Bętkowski
+// Pobieranie elementów HTML
+const noteText = document.getElementById("note-text")
+const noteColor = document.getElementById("note-color")
+const addNoteButton = document.getElementById("add-note")
+const notesList = document.getElementById("notes-list")
+
+// Funkcja dodająca notatkę do local storage
+function addNoteToLocalStorage(note) {
+	let notes = JSON.parse(localStorage.getItem("notes")) || []
+	note.timestamp = new Date().toLocaleString()
+	notes.push(note)
+	localStorage.setItem("notes", JSON.stringify(notes))
+}
+
+// Funkcja wyświetlająca notatki
+function showNotes() {
+	let notes = JSON.parse(localStorage.getItem("notes")) || []
+	notesList.innerHTML = ""
+	for (let i = 0; i < notes.length; i++) {
+		let note = document.createElement("div")
+		let noteText = document.createElement("p")
+		let noteColor = notes[i].color
+		let noteDate = notes[i].timestamp
+
+		noteText.innerText = notes[i].text
+
+		note.className = note note-${noteColor}
+		note.appendChild(noteText)
+		note.innerHTML += <small>${noteDate}</small>
+
+		let deleteButton = document.createElement("button")
+		deleteButton.innerText = "Delete"
+		deleteButton.addEventListener("click", function () {
+			console.log("delete button clicked")
+			deleteNote(i)
+		})
+		note.appendChild(deleteButton)
+
+		notesList.appendChild(note)
+	}
+}
+
+function deleteNote(index) {
+	console.log("deleteNote function called with index: ", index)
+	let notes = JSON.parse(localStorage.getItem("notes")) || []
+	notes.splice(index, 1)
+	localStorage.setItem("notes", JSON.stringify(notes))
+	showNotes()
+}
+
+// Funkcja dodająca notatkę
+function addNote() {
+	if (!noteText.value) {
+		return
+	}
+
+	let note = {
+		text: noteText.value,
+		color: noteColor.value,
+	}
+
+	addNoteToLocalStorage(note)
+	showNotes()
+
+	noteText.value = ""
+}
+
+// Dodawanie notatki po kliknięciu przycisku
+addNoteButton.addEventListener("click", addNote)
